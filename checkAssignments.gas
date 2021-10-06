@@ -1,0 +1,41 @@
+// C演習I 提出回数チェックスクリプト
+// 使い方
+// 1. 提出状況のシートと同じスプレッドシートにlec00という名前のシートを作成し，提出状況のサイトからコピペする
+// 2. このシートの毎回変更する場所を変更する(第n回, 課題の数)
+function checkAssignments() {
+
+  // 毎回変更する場所ここから --------
+  var lecN = 'lec01';
+  var lecNum = 1; // 授業回
+  var assignmentN = 100; // 課題の数
+  // 毎回変更する場所ここまで --------
+
+  var studentNum = 100; // 生徒の数
+  // シート取得
+  var spreadsheetId = 'スプレッドシートのID'; // スプレッドシートのID
+  
+  var spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  var assignmentList = spreadsheet.getSheetByName(lecN).getRange(2, 2, studentNum * 3, assignmentN+1).getValues();
+  var nameSheet = spreadsheet.getSheetByName('提出状況');
+  var nameList = nameSheet.getRange(2, 2, studentNum).getValues();
+
+  var list = [],
+      namelist_i = 0;
+
+  //Logger.log(assignmentList[0]);
+
+  for(let i=0; i<assignmentList.length; ++i) {
+    if (assignmentList[i][0] != nameList[namelist_i]) continue;
+
+    list[namelist_i] = 0;
+    for(let j=1; j<assignmentList[i+2].length; ++j) {
+      if (assignmentList[i+2][j] == '○') list[namelist_i]++;
+    }
+
+    //Logger.log(list[namelist_i]);
+    
+    // 出力
+    nameSheet.getRange(2+namelist_i, 2+lecNum).setValue(list[namelist_i]);
+    namelist_i++;
+  }
+}
