@@ -5,20 +5,20 @@
 function checkAssignments() {
 
   // 毎回変更する場所ここから --------
-  var lecN = 'lec01';
-  var lecNum = 1;
-  var assignmentN = 8;
+  var lecN = 'lec06';
+  var lecNum = 6;
+  var assignmentN = 10;
   // 毎回変更する場所ここまで --------
 
   var studentNum = 109; // 生徒の数
   // シート取得
-  var spreadsheetId = ''; // スプレッドシートのID
+  var spreadsheetId = ''; // 読み込み・書き込みを行うスプレッドシートのID
   
   var spreadsheet = SpreadsheetApp.openById(spreadsheetId);
   var assignmentList = spreadsheet.getSheetByName(lecN).getRange(2, 2, studentNum * 3, assignmentN+1).getValues();
-  var nameSheet = spreadsheet.getSheetByName('提出状況');
-  var nameList = nameSheet.getRange(2, 2, studentNum).getValues();
-  var redSheet = spreadsheet.getSheetByName('提出数が4回以下の学生');
+  var nameSheet = spreadsheet.getSheetByName('課題提出状況'); // 生徒の名簿のシート読み込み
+  var nameList = nameSheet.getRange(2, 2, studentNum).getValues(); // 生徒の名簿取得
+  var redSheet = spreadsheet.getSheetByName('課題提出数が4回以下の学生'); // 出力先
 
   var score = 0,
       namelist_i = 0,
@@ -32,7 +32,17 @@ function checkAssignments() {
   //Logger.log(assignmentList[0]);
 
   for(let i=0; i<assignmentList.length; ++i) {
-    if (assignmentList[i][0] != nameList[namelist_i]) continue;
+    if (assignmentList[i][0].indexOf("e1q") == -1) {
+      continue;
+    } else if (assignmentList[i][0] != nameList[namelist_i]) {
+      Logger.log(assignmentList[i][0] + "," + nameList[namelist_i]);
+
+      namelist_i++;
+      i--;
+      continue;
+    }
+
+    Logger.log("checkok: " + assignmentList[i][0] + "," + nameList[namelist_i]);
 
     score = 0;
     for(let j=1; j<assignmentList[i+2].length; ++j) {
